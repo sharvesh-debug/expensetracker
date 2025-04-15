@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Expense Tracker</title>
+  <style>
+  body {
+    background: linear-gradient(to right, white, pink);  
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+   
+    
+  }
+  .expense-entry {
+     background: linear-gradient(to right, white, pink);
+    width:100%;
+  
+    display:flex;
+    flex-direction:column;
+    
+   
+    border-color:#B565A7;
+     
+      
+    
+    border-style: solid;
+ 
+    }
+    #head {
+    width:100%;
+    background-color:#C3447A;
+     
+    
+     display:flex;
+     justify-content: center;
+     align-items: center;
+     font-size:25px;
+     
+      
+     
+     
+    }
+    h3{
+     background-color:#C3447A;
+     
+    
+     display:flex;
+     justify-content: center;
+     align-items: center;
+     font-size:25px;
+     
+      
+     
+     
+    }
+    td{
+    text-align:centre;
+    }
+    
+    select {
+    background-color:#F7CAC9;
+    }
+    input{
+    
+    background-color:#F7CAC9;
+    }
+    
+    button{
+    border-color:#B565A7;
+     
+      
+    
+    border-style: solid;
+    color:B565A7;
+ 
+    
+    border-radius:20px;
+    background-color : #F7CAC9;
+    }
+    #summary{
+    width:100%;
+     display:flex;
+     flex-direction:column;
+     justify-content:centre;
+     align-items:centre;
+    }
+    button:hover{
+    background-color : #C3447A;
+    
+    }
+    
+    td {
+  text-align: center;
+    }
+</style>
+
+ 
+  
+  
+</head>
+<body>
+  <div id=head>
+ 
+  <h2>Expense Tracker</h2>
+  </div>
+  <form id="expense-form">
+    <div class="expense-entry">
+      <label for="expense">Select type of expense</label>
+      <select name="expensetype">
+        <option value="medical">medical</option>
+        <option value="food">food</option>
+        <option value="grosery">grosery</option>
+        <option value="tax">Tax</option>
+        <option value="bill">bill</option>
+        <option value="transport">transport</option>
+        <option value="otherexpence">others</option>
+      </select>
+      <label for="cost">Enter cost in rupees:</label>
+      <input type="number" name="cost" placeholder="₹">
+      <label for="date">Enter date:</label>
+      <input type="date" name="date">
+      <hr>
+    </div>
+    <div id="extra-entries"></div>
+    <button type="button" id="add">Add Expenses</button>
+    <button type="button" id="sub">Submit</button>
+  </form>
+  <div id="summary" hidden>
+    
+  </div>
+
+  <script>
+  let expenseWay = [];
+  let costWay = [];
+  let dateWay = [];
+  let Totalexpenses = 0;
+  
+  document.addEventListener("DOMContentLoaded", function () {
+    const subButton = document.getElementById("sub");
+    const addButton = document.getElementById("add");
+    const container = document.getElementById("extra-entries");
+    const summaryDiv = document.getElementById("summary");
+   
+   
+    document.querySelector('select[name="expensetype"]').id = "current-expense-type";
+    document.querySelector('input[name="cost"]').id = "current-cost";
+    document.querySelector('input[name="date"]').id = "current-date";
+   
+    addButton.addEventListener("click", function () {
+      
+      let costValue = Number(document.getElementById("current-cost").value);
+      let expenseType = document.getElementById("current-expense-type").value;
+      let dateValue = document.getElementById("current-date").value;
+      
+      
+      if (costValue <= 0 || !dateValue) {
+        alert("Please enter a valid cost and date");
+        return;
+      }
+     
+      
+      Totalexpenses += costValue;
+      costWay.push(costValue);
+      expenseWay.push(expenseType);
+      dateWay.push(dateValue);
+      
+      console.log("Total:", Totalexpenses);
+      console.log("Expense Types:", expenseWay);
+      console.log("Costs:", costWay);
+      console.log("Dates:", dateWay);
+     
+      
+      const firstEntry = document.querySelector(".expense-entry");
+      const newEntry = firstEntry.cloneNode(true);
+     
+      
+      document.getElementById("current-expense-type").removeAttribute("id");
+      document.getElementById("current-cost").removeAttribute("id");
+      document.getElementById("current-date").removeAttribute("id");
+      
+      
+      newEntry.querySelector('input[name="cost"]').value = "";
+      newEntry.querySelector('input[name="date"]').value = "";
+      
+      
+      newEntry.querySelector('select[name="expensetype"]').id = "current-expense-type";
+      newEntry.querySelector('input[name="cost"]').id = "current-cost";
+      newEntry.querySelector('input[name="date"]').id = "current-date";
+     
+      
+      container.appendChild(newEntry);
+    });
+    
+    subButton.addEventListener("click", function() {
+      
+      if (expenseWay.length === 0) {
+        alert("Please add at least one expense");
+        return;
+      }
+      
+      
+      summaryDiv.hidden = false;
+      
+      
+      let tableHTML = "<table>";
+      tableHTML += "<tr><th>Expense Type</th><th>Cost </th><th>Date</th></tr>";
+      
+      
+      for (let i = 0; i < expenseWay.length; i++) {
+        tableHTML += "<tr>";
+        tableHTML += "<td>" + expenseWay[i] + "</td>";
+        tableHTML += "<td>" + costWay[i] + "</td>";
+        tableHTML += "<td>" + dateWay[i] + "</td>";
+        tableHTML += "</tr>";
+      }
+      
+    
+      tableHTML += "<tr class='total-row'>";
+      tableHTML += "<td>Total</td>";
+      tableHTML += "<td>" + Totalexpenses + "</td>";
+      tableHTML += "<td></td>";
+      tableHTML += "</tr>";
+      
+      tableHTML += "</table>";
+      
+      
+      summaryDiv.innerHTML = "<h3>Summary of Bills</h3>" + tableHTML;
+    });
+  });
+  </script>
+</body>
+</html>
